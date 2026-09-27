@@ -15,29 +15,33 @@ import java.util.List;
 public class studentcontroller {
 
     private studentservice studservice;
+
     public studentcontroller(studentservice studservice) {
         this.studservice = studservice;
     }
+
     //create
     @PostMapping("/create")
-    public String createsstudent(@RequestBody student stud){
-       student createdstudent= studservice.createstudent(stud);
-       return "Student created";
+    public ResponseEntity<student> createsstudent(@RequestBody student stud) {
+        student createdstudent = studservice.createstudent(stud);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdstudent);
     }
-    //read
+
+    //read(where deleted=0)
     @GetMapping("/get/{id}")
-    public ResponseEntity<student> getStudent(@PathVariable int id){
-        student resp=studservice.getstudent(id);
-        if(resp==null){
+    public ResponseEntity<student> getStudent(@PathVariable int id) {
+        student resp = studservice.getstudent(id);
+        if (resp == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
         return ResponseEntity.ok(resp);
     }
+
     //readall
     @GetMapping("/getall")
-    public ResponseEntity<List<student>> getStudent(){
-        List<student> resp=studservice.getall();
-        if(resp.isEmpty()){
+    public ResponseEntity<List<student>> getStudent() {
+        List<student> resp = studservice.getall();
+        if (resp.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(resp);
@@ -45,22 +49,32 @@ public class studentcontroller {
 
     //update
     @PutMapping("/update/{id}")
-    public ResponseEntity<student> updateStudent(@PathVariable int id,@RequestBody student stud) {
+    public ResponseEntity<student> updateStudent(@PathVariable int id, @RequestBody student stud) {
         student resp = studservice.updatestudent(id, stud);
         if (resp == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(resp);
     }
-        //delete
-        @DeleteMapping("/delete/{id}")
-        public ResponseEntity<String> deletedstudent(@PathVariable int id)
-        {
-         Boolean isDeleted= studservice.deleteStudent(id);
 
-         if(!isDeleted){
-             return ResponseEntity.notFound().build();
-         }
-         return ResponseEntity.ok("Deleted");
+    //delete
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deletedstudent(@PathVariable int id) {
+        Boolean isDeleted = studservice.deleteStudent(id);
+
+        if (!isDeleted) {
+            return ResponseEntity.notFound().build();
         }
+        return ResponseEntity.ok("Deleted");
+    }
+
+    //soft delete
+    @PatchMapping("/delete-soft/{id}")
+    public ResponseEntity<String> deletesoft(@PathVariable int id) {
+     Boolean isDeleted = studservice.deletestudentsoft(id);
+    if (!isDeleted) {
+        return ResponseEntity.notFound().build();
+    }
+    return ResponseEntity.ok("Deleted");
+    }
 }

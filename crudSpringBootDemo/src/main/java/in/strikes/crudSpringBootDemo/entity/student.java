@@ -8,6 +8,7 @@ import jdk.jfr.Enabled;
 public class student {
     private String name;
     private int age;
+    private Boolean deleted;
     @Id
     private int  id;
 
@@ -32,5 +33,13 @@ public class student {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 }
